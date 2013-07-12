@@ -11,7 +11,7 @@ import com.hannesdorfmann.httpkit.request.HttpGetRequest;
 import com.hannesdorfmann.httpkit.request.HttpRequest;
 import com.hannesdorfmann.httpkit.response.HttpResponse;
 import com.hannesdorfmann.httpkit.response.HttpResponseReceiver;
-import com.hippohappa.RequestFactory;
+import com.hippohappa.http.RequestFactory;
 import com.hippohappa.model.foursquare.FoursquareResponse;
 import com.hippohappa.model.foursquare.Item;
 

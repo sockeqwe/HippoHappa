@@ -1,10 +1,9 @@
-package com.hippohappa;
+package com.hippohappa.http;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import com.hannesdorfmann.httpkit.request.HttpGetRequest;
-import com.hippohappa.http.FoursquareApi;
 import com.hippohappa.model.foursquare.FoursquareResponse;
 
 /**
