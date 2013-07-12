@@ -1,6 +1,8 @@
 package com.hippohappa.http;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import com.hannesdorfmann.httpkit.request.HttpGetRequest;
@@ -13,6 +15,9 @@ import com.hippohappa.model.foursquare.FoursquareResponse;
  * 
  */
 public class RequestFactory {
+
+	private static SimpleDateFormat formatter = new SimpleDateFormat(
+			"yyyyMMdd", Locale.getDefault());
 
 	/**
 	 * The basic request
@@ -28,6 +33,7 @@ public class RequestFactory {
 		r.putUrlParam("client_id", FoursquareApi.CLIENT_ID);
 		r.putUrlParam("client_secret", FoursquareApi.CLIENT_SECRET);
 		r.putUrlParam("limit", 35);
+		r.putUrlParam("v", formatter.format(new Date()));
 
 		r.getHttpHeaders().put("Accept-Language",
 				Locale.getDefault().getCountry());
