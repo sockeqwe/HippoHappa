@@ -8,6 +8,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +17,7 @@ import com.hippohappa.BaseActivity;
 import com.hippohappa.R;
 import com.hippohappa.exception.NoSensorException;
 import com.hippohappa.model.foursquare.Item;
+import com.hippohappa.shake.animation.HippoAnimator;
 
 /**
  * This is the activiy where the user has to shake to get a list of restaurants
@@ -51,7 +54,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView {
 			float delta = accelCurrent - accelLast;
 			mAccel = mAccel * 0.9f + delta; // perform low-cut filter
 
-			checkAccelaration(mAccel);
+			checkAccelaration(Math.abs(mAccel));
 		}
 
 		@Override
@@ -68,6 +71,14 @@ public class ShakeActivity extends BaseActivity implements ShakeView {
 		shakeHint = (TextView) findViewById(R.id.shakeHint);
 
 		hippoAnimator = new HippoAnimator(hippo);
+
+		hippo.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				hippoAnimator.start();
+			}
+		});
 
 		// Init the sensor
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -113,7 +124,9 @@ public class ShakeActivity extends BaseActivity implements ShakeView {
 	@Override
 	protected void onPause() {
 		mSensorManager.unregisterListener(sensorListener);
+		hippoAnimator.stop();
 		super.onPause();
+
 	}
 
 	/**
@@ -121,9 +134,10 @@ public class ShakeActivity extends BaseActivity implements ShakeView {
 	 * 
 	 * @param acceleration
 	 */
-	private void checkAccelaration(double acceleration) {
+	private void checkAccelaration(float acceleration) {
+
 		if (acceleration > 12) {
-			hippoAnimator.showHippoSick();
+			hippoAnimator.setShakeAcceleration(acceleration);
 		}
 	}
 

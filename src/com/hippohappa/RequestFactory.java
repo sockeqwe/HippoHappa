@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import com.hannesdorfmann.httpkit.request.HttpGetRequest;
+import com.hippohappa.http.FoursquareApi;
+import com.hippohappa.model.foursquare.FoursquareResponse;
 
 /**
  * A little factory to create http requests
@@ -12,10 +14,6 @@ import com.hannesdorfmann.httpkit.request.HttpGetRequest;
  * 
  */
 public class RequestFactory {
-
-	private static String CLIENT_ID = "";
-
-	private static String CLIENT_SECRET = "";
 
 	/**
 	 * The basic request
@@ -28,15 +26,19 @@ public class RequestFactory {
 		String baseUrl = "https://api.foursquare.com/v2/venues/explore";
 
 		HttpGetRequest r = new HttpGetRequest(baseUrl);
-		r.putUrlParam("client_id", CLIENT_ID);
-		r.putUrlParam("client_secret", CLIENT_SECRET);
+		r.putUrlParam("client_id", FoursquareApi.CLIENT_ID);
+		r.putUrlParam("client_secret", FoursquareApi.CLIENT_SECRET);
 		r.putUrlParam("limit", 35);
 
 		r.getHttpHeaders().put("Accept-Language",
 				Locale.getDefault().getCountry());
+
+		// Settings
 		r.setCacheResponse(true);
 		r.setOnOfflineAllowExpiredCacheValue(true);
 		r.setOnOfflineFromCache(true);
+
+		r.setParseInto(FoursquareResponse.class);
 		return r;
 	}
 

@@ -20,3 +20,6 @@ local.properties
 .project
 .settings/
 .factorypath
+
+#Security credetionals
+src/com/hippohappa/http/FoursquareApi.java

@@ -52,7 +52,7 @@ public class ShakePresenter extends HttpPresenter<ShakeView> {
 
 		request.setOwner(this);
 		currentRequest = request;
-		httpKit.execute(request, FoursquareResponse.class,
+		httpKit.execute(request,
 				new HttpResponseReceiver<FoursquareResponse>() {
 
 					@Override
