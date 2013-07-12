@@ -76,7 +76,6 @@ public class ShakeActivity extends BaseActivity implements ShakeView {
 
 			@Override
 			public void onClick(View v) {
-				hippoAnimator.start();
 			}
 		});
 

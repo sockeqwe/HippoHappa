@@ -19,73 +19,42 @@ public class HippoAnimator {
 
 	private class ShakeAnimator {
 
-		private final ImageView hippo;
+		private AnimatorSet animatorSet;
 
-		private final AnimatorSet animatorSet;
-
-		private ShakeAnimator(ImageView hippo) {
+		public void start(ImageView hippo) {
 			animatorSet = new AnimatorSet();
-			this.hippo = hippo;
 
 			ObjectAnimator left = ObjectAnimator.ofFloat(hippo, "translationX",
 					0, -20);
 			ObjectAnimator right = ObjectAnimator.ofFloat(hippo,
 					"translationX", 0, 20);
 
-			ObjectAnimator up = ObjectAnimator.ofFloat(hippo, "translationY",
-					0, -10);
-			ObjectAnimator down = ObjectAnimator.ofFloat(hippo, "translationY",
-					0, -10);
-
 			ObjectAnimator middleX = ObjectAnimator.ofFloat(hippo,
 					"translationX", -20, 0);
-			ObjectAnimator middleY = ObjectAnimator.ofFloat(hippo,
-					"translationY", -10, 0);
 
 			ObjectAnimator middleX2 = ObjectAnimator.ofFloat(hippo,
 					"translationX", 20, 0);
-			ObjectAnimator middleY2 = ObjectAnimator.ofFloat(hippo,
-					"translationY", 10, 0);
-
-			left.setRepeatMode(ObjectAnimator.INFINITE);
-			right.setRepeatMode(ObjectAnimator.INFINITE);
-			up.setRepeatMode(ObjectAnimator.INFINITE);
-			down.setRepeatMode(ObjectAnimator.INFINITE);
-
-			AnimatorSet leftUp = new AnimatorSet();
-			leftUp.playTogether(left, up);
-
-			AnimatorSet backMiddle = new AnimatorSet();
-			backMiddle.playTogether(middleX, middleY);
-
-			AnimatorSet rightDown = new AnimatorSet();
-			rightDown.playTogether(right, down);
-
-			AnimatorSet backMiddle2 = new AnimatorSet();
-			backMiddle2.playTogether(middleX2, middleY2);
-
-			animatorSet.playSequentially(left, middleX, right, middleX2);
-
-			animatorSet.setDuration(currentDuration);
 
 			animatorSet.addListener(new AnimListener() {
 
 				@Override
+				public void onAnimationStart(Animator a) {
+					Log.d("Test", "started " + currentDuration);
+				}
+
+				@Override
 				public void onAnimationEnd(Animator arg0) {
 
-					if (!changedByAcceleration)
-						currentDuration *= 1.25;
-
-					changedByAcceleration = false;
+					currentDuration = (int) (currentDuration * 1.1 + 0.5);
 
 					animatorSet.setDuration(currentDuration);
 					animatorSet.start();
 				}
 			});
 
-		}
+			animatorSet.playSequentially(left, middleX, right, middleX2);
 
-		public void start() {
+			animatorSet.setDuration(currentDuration);
 			animatorSet.start();
 		}
 
@@ -94,18 +63,18 @@ public class HippoAnimator {
 		}
 
 		public boolean isRunning() {
-			return animatorSet.isRunning();
+			return animatorSet == null ? false : animatorSet.isRunning();
 		}
 	}
 
 	private final ImageView hippo;
 	private float lastShakeAcceleration = 0;
-	private ShakeAnimator animator;
-	private int currentDuration;
-	private boolean changedByAcceleration;
+	private final ShakeAnimator animator;
+	private int currentDuration = 10;
 
 	public HippoAnimator(ImageView hippo) {
 		this.hippo = hippo;
+		animator = new ShakeAnimator();
 	}
 
 	public void showHippoSmiling() {
@@ -123,34 +92,24 @@ public class HippoAnimator {
 	public void setShakeAcceleration(float acceleration) {
 
 		if (acceleration > lastShakeAcceleration)
-			calculateDurationTime();
+			currentDuration = (int) Math.min(10, 50 - acceleration + 0.5);
 
-		Log.d("Test", "Shake");
+		Log.d("Test", "Shake " + acceleration);
 		lastShakeAcceleration = acceleration;
 
-		if (animator == null) {
-			animator = new ShakeAnimator(hippo);
-			animator.start();
+		if (!animator.isRunning()) {
+			animator.start(hippo);
+			Log.d("Test", "starting");
 		}
 	}
 
 	public void stop() {
 		animator.cancel();
-		animator = null;
 		hippo.clearAnimation();
 		lastShakeAcceleration = 0;
 		ViewHelper.setTranslationX(hippo, 0);
 		ViewHelper.setTranslationY(hippo, 0);
 
-	}
-
-	public void start() {
-		animator.start();
-	}
-
-	private void calculateDurationTime() {
-		currentDuration = (int) (1000 / lastShakeAcceleration);
-		changedByAcceleration = true;
 	}
 
 }
