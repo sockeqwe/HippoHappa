@@ -59,7 +59,8 @@ public class HippoAnimator {
 		}
 
 		public void cancel() {
-			animatorSet.cancel();
+			if (animatorSet != null)
+				animatorSet.cancel();
 		}
 
 		public boolean isRunning() {
