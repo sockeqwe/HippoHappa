@@ -13,7 +13,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +46,6 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 	private MenuItem searchItem;
 	private SearchView searchView;
-	private final boolean searchViewExpanded = false;
 	private TextView shakeHint;
 
 	private Item randomItem;
@@ -221,8 +219,8 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		Toast.makeText(this, R.string.error_location_manager_no_location,
 				TOAST_DURATION).show();
 
-		// Tricky but seems to work this way
-		searchView.onActionViewExpanded();
+		// Expand to show the input field
+		searchView.setIconified(false);
 	}
 
 	@Override
@@ -241,8 +239,6 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		String info = "CONNECTED " + currentLocation.getLatitude() + " "
 				+ currentLocation.getLongitude();
 		Toast.makeText(this, info, TOAST_DURATION).show();
-
-		Log.d("Test", info);
 
 	}
 
@@ -273,6 +269,8 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		searchView.setQueryHint(getString(R.string.search_hint));
 		searchItem.setIcon(R.drawable.ic_action_search);
 
+		searchView.setIconifiedByDefault(true);
+
 		// Connect the client.
 		locationClientReconnectOnDisconnect = true;
 		locationClient.connect();
@@ -280,19 +278,16 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	//
-	// @Override
-	// public boolean onOptionsItemSelected(MenuItem item) {
-	// return super.onOptionsItemSelected(item);
-	// }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		return super.onOptionsItemSelected(item);
+	}
 
 	@Override
 	public void onBackPressed() {
-
-		// Tricky hack, but seems to work
-		if (searchView.isShown())
-			searchView.onActionViewCollapsed();
-		else
+		if (!searchView.isIconified()) {
+			searchView.setIconified(true);
+		} else
 			super.onBackPressed();
 	}
 }
