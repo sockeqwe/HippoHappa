@@ -8,6 +8,7 @@ import java.util.Locale;
 import com.hannesdorfmann.httpkit.parser.condition.EqualCondition;
 import com.hannesdorfmann.httpkit.request.HttpGetRequest;
 import com.hippohappa.model.foursquare.FoursquareResponse;
+import com.hippohappa.model.google.GeocodingResult;
 
 /**
  * A little factory to create http requests
@@ -102,6 +103,8 @@ public class RequestFactory {
 		r.putUrlParam("address", address);
 		r.putUrlParam("sensor", false);
 
+		r.setParseCondition(new EqualCondition(200));
+		r.setParseInto(GeocodingResult.class);
 		return r;
 	}
 }

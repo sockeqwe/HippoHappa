@@ -19,6 +19,6 @@ public interface ShakeView {
 	/**
 	 * Shows an error message to inform the user that something went wrong
 	 */
-	public void showError(Exception e);
+	public void showHappaError(Exception e);
 
 }

@@ -104,7 +104,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 			accelCurrent = SensorManager.GRAVITY_EARTH;
 			accelLast = SensorManager.GRAVITY_EARTH;
 		} else {
-			showError(new NoSensorException());
+			showHappaError(new NoSensorException());
 		}
 
 		presenter = new ShakePresenter(this, getHttpKit());
@@ -123,7 +123,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 			presenter.findHappa(currentLocation.getLatitude(),
 					currentLocation.getLongitude());
 		} catch (UnsupportedEncodingException e) {
-			showError(e);
+			showHappaError(e);
 		}
 	}
 
@@ -192,7 +192,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	}
 
 	@Override
-	public void showError(Exception e) {
+	public void showHappaError(Exception e) {
 
 	}
 
@@ -239,21 +239,22 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 	@Override
 	public void onConnected(Bundle connectionHint) {
-		locationClientError = false;
-		getCurrentLocationFromPlayService();
+
+		currentLocation = locationClient.getLastLocation();
+		if (currentLocation == null)
+			onLocationCouldNotBeDetected();
+		else {
+			locationClientError = false;
+			findHappa();
+			hippo.showHippoReadyForShaking();
+
+		}
 	}
 
 	@Override
 	public void onDisconnected() {
 		if (locationClientReconnectOnDisconnect)
 			locationClient.connect();
-	}
-
-	private void getCurrentLocationFromPlayService() {
-		currentLocation = locationClient.getLastLocation();
-		if (currentLocation == null)
-			onLocationCouldNotBeDetected();
-
 	}
 
 	@Override

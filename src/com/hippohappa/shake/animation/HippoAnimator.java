@@ -67,6 +67,11 @@ public class HippoAnimator {
 		public boolean isRunning() {
 			return animatorSet == null ? false : animatorSet.isRunning();
 		}
+
+		public void adjustDuration(int newDuration) {
+			if (animatorSet != null)
+				animatorSet.setDuration(newDuration);
+		}
 	}
 
 	private final ImageView hippo;
@@ -126,13 +131,12 @@ public class HippoAnimator {
 		if (acceleration > lastShakeAcceleration)
 			currentDuration = (int) Math.min(10, 50 - acceleration + 0.5);
 
-		Log.d("Test", "Shake " + acceleration);
 		lastShakeAcceleration = acceleration;
 
 		if (!animator.isRunning()) {
 			animator.start(hippo);
-			Log.d("Test", "starting");
-		}
+		} else
+			animator.adjustDuration(currentDuration);
 	}
 
 	public void stop() {

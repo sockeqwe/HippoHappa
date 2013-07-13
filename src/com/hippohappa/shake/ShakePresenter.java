@@ -14,6 +14,7 @@ import com.hannesdorfmann.httpkit.response.HttpResponseReceiver;
 import com.hippohappa.http.RequestFactory;
 import com.hippohappa.model.foursquare.FoursquareResponse;
 import com.hippohappa.model.foursquare.Item;
+import com.hippohappa.model.google.GeocodingResult;
 
 /**
  * This is the presenter for the {@link ShakeView}. Its responsible to load the
@@ -41,16 +42,8 @@ public class ShakePresenter extends HttpPresenter<ShakeView> {
 	public void findHappa(double latitude, double longitude)
 			throws UnsupportedEncodingException {
 
-		executeRequest(RequestFactory.getHappaRequest(latitude, longitude));
-	}
-
-	/**
-	 * Efectivly execute the request
-	 * 
-	 * @param request
-	 */
-	private void executeRequest(HttpGetRequest request) {
-
+		HttpGetRequest request = RequestFactory.getHappaRequest(latitude,
+				longitude);
 		request.setOwner(this);
 		currentRequest = request;
 		httpKit.execute(request,
@@ -59,7 +52,7 @@ public class ShakePresenter extends HttpPresenter<ShakeView> {
 					@Override
 					public void onFailure(HttpRequest req, Exception arg1) {
 						if (view != null && currentRequest == req)
-							view.showError(arg1);
+							view.showHappaError(arg1);
 
 					}
 
@@ -88,5 +81,31 @@ public class ShakePresenter extends HttpPresenter<ShakeView> {
 						}
 					}
 				});
+	}
+
+	/**
+	 * Load a list of places with
+	 * 
+	 * @param search
+	 * @throws UnsupportedEncodingException
+	 */
+	public void loadPlaces(String search) throws UnsupportedEncodingException {
+		HttpGetRequest r = RequestFactory.getGeoCodingByAdress(search);
+
+		httpKit.execute(r, new HttpResponseReceiver<GeocodingResult>() {
+
+			@Override
+			public void onFailure(HttpRequest arg0, Exception arg1) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onSuccess(HttpResponse<GeocodingResult> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
 	}
 }
