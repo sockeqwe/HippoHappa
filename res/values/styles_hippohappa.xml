@@ -29,7 +29,8 @@
         <item name="actionModeBackground">@drawable/cab_background_top_hippohappa</item>
         <item name="actionModeSplitBackground">@drawable/cab_background_bottom_hippohappa</item>
         <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Hippohappa</item>
-
+		
+        <item name="searchViewSearchIcon">@drawable/ic_action_search</item>
         
     </style>
 

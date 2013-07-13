@@ -7,6 +7,7 @@
     
     <string name="shake_phone">Shake to find yum-yum</string>
     
+    <string name="search_hint">Where are you?</string>
     
     <string name="error_location_manager_no_location">Could not determine your current location</string>
 

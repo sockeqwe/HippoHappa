@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -44,6 +45,8 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 	private ImageView hippo;
 
+	private MenuItem searchItem;
+	private SearchView searchView;
 	private TextView shakeHint;
 
 	private Item randomItem;
@@ -60,8 +63,6 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	private float mAccel; // acceleration apart from gravity
 	private float accelCurrent; // current acceleration including gravity
 	private float accelLast; // last acceleration including gravity
-
-	private boolean showingSearchField = false;
 
 	private final SensorEventListener sensorListener = new SensorEventListener() {
 
@@ -265,49 +266,24 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.shake, (com.actionbarsherlock.view.Menu) menu);
+
+		searchItem = menu.findItem(R.id.actionSearch);
+		searchView = (SearchView) searchItem.getActionView();
+		searchView.setQueryHint(getString(R.string.search_hint));
+		searchItem.setIcon(R.drawable.ic_action_search);
+
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.actionSearch:
-			showSearchFieldInActionBar();
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
-
-		menu.findItem(R.id.actionSearch).setVisible(!showingSearchField);
-		menu.findItem(R.id.actionSettings).setVisible(!showingSearchField);
-
-		return true;
-	}
-
-	/**
-	 * shows the searchfield in the actionbar
-	 */
-	private void showSearchFieldInActionBar() {
-		showingSearchField = true;
-		supportInvalidateOptionsMenu();
-	}
-
-	/**
-	 * Shows the normal actionbar
-	 */
-	private void hideSearchFieledInActionBar() {
-		showingSearchField = false;
-		supportInvalidateOptionsMenu();
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
 	public void onBackPressed() {
-		if (showingSearchField)
-			hideSearchFieledInActionBar();
+		if (searchItem != null && searchItem.isActionViewExpanded())
+			searchItem.collapseActionView();
 		else
 			super.onBackPressed();
 	}
