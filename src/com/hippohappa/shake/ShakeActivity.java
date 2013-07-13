@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -254,5 +256,12 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 				onLocationCouldNotBeDetected();
 
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.shake, (com.actionbarsherlock.view.Menu) menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 }

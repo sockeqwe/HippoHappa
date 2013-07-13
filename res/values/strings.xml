@@ -3,6 +3,8 @@
 
     <string name="app_name">Hippo Happa</string>
     <string name="action_settings">Settings</string>
+    <string name="action_settings">Search</string>
+    
     <string name="shake_phone">Shake to find yum-yum</string>
     
     
