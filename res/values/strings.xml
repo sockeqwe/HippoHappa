@@ -9,6 +9,6 @@
     
     <string name="search_hint">Where are you?</string>
     
-    <string name="error_location_manager_no_location">Could not determine your current location</string>
+    <string name="error_location_manager_no_location">Could not determine your current location. Please use the search to set you current location.s</string>
 
 </resources>

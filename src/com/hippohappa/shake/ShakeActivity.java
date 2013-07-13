@@ -47,6 +47,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 	private MenuItem searchItem;
 	private SearchView searchView;
+	private final boolean searchViewExpanded = false;
 	private TextView shakeHint;
 
 	private Item randomItem;
@@ -131,9 +132,6 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	protected void onStart() {
 		super.onStart();
 
-		// Connect the client.
-		locationClientReconnectOnDisconnect = true;
-		locationClient.connect();
 	}
 
 	@Override
@@ -222,6 +220,9 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 		Toast.makeText(this, R.string.error_location_manager_no_location,
 				TOAST_DURATION).show();
+
+		// Tricky but seems to work this way
+		searchView.onActionViewExpanded();
 	}
 
 	@Override
@@ -272,18 +273,25 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		searchView.setQueryHint(getString(R.string.search_hint));
 		searchItem.setIcon(R.drawable.ic_action_search);
 
+		// Connect the client.
+		locationClientReconnectOnDisconnect = true;
+		locationClient.connect();
+
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		return super.onOptionsItemSelected(item);
-	}
+	//
+	// @Override
+	// public boolean onOptionsItemSelected(MenuItem item) {
+	// return super.onOptionsItemSelected(item);
+	// }
 
 	@Override
 	public void onBackPressed() {
-		if (searchItem != null && searchItem.isActionViewExpanded())
-			searchItem.collapseActionView();
+
+		// Tricky hack, but seems to work
+		if (searchView.isShown())
+			searchView.onActionViewCollapsed();
 		else
 			super.onBackPressed();
 	}
