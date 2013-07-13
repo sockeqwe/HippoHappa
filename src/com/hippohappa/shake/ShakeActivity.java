@@ -15,7 +15,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -42,7 +41,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 	private final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 23;
 
-	private ImageView hippo;
+	private ImageView hippoView;
 
 	private MenuItem searchItem;
 	private SearchView searchView;
@@ -54,9 +53,10 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	private LocationClient locationClient;
 	private Location currentLocation;
 	private boolean locationClientReconnectOnDisconnect;
+	private boolean locationClientError = false;
 
 	private ShakePresenter presenter;
-	private HippoAnimator hippoAnimator;
+	private HippoAnimator hippo;
 
 	private SensorManager mSensorManager;
 	private float mAccel; // acceleration apart from gravity
@@ -88,10 +88,10 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_shake);
 
-		hippo = (ImageView) findViewById(R.id.hippo);
+		hippoView = (ImageView) findViewById(R.id.hippo);
 		hintView = (TextView) findViewById(R.id.hint);
 
-		hippoAnimator = new HippoAnimator(hippo);
+		hippo = new HippoAnimator(hippoView, hintView);
 
 		// Init the sensor
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -112,9 +112,16 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		locationClient = new LocationClient(this, this, this);
 	}
 
-	private void findHappa(double latitude, double longitude) {
+	/**
+	 * Starts the request to find happa happa
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 */
+	private void findHappa() {
 		try {
-			presenter.findHappa(49.016674, 12.095343);
+			presenter.findHappa(currentLocation.getLatitude(),
+					currentLocation.getLongitude());
 		} catch (UnsupportedEncodingException e) {
 			showError(e);
 		}
@@ -147,12 +154,21 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		mSensorManager.registerListener(sensorListener,
 				mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_NORMAL);
+
+		if (currentLocation == null && !locationClientError)
+			hippo.showHippoLookingMap();
+
+		if (locationClientError)
+			hippo.showHippoCouldNotDetectLocation();
+
+		if (currentLocation != null)
+			hippo.showHippoReadyForShaking();
 	}
 
 	@Override
 	protected void onPause() {
 		mSensorManager.unregisterListener(sensorListener);
-		hippoAnimator.stop();
+		hippo.stop();
 		super.onPause();
 
 	}
@@ -165,7 +181,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	private void checkAccelaration(float acceleration) {
 
 		if (acceleration > 12) {
-			hippoAnimator.setShakeAcceleration(acceleration);
+			hippo.setShakeAcceleration(acceleration);
 		}
 	}
 
@@ -216,15 +232,14 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	 */
 	private void onLocationCouldNotBeDetected() {
 
-		Toast.makeText(this, R.string.error_location_manager_no_location,
-				TOAST_DURATION).show();
-
+		hippo.showHippoCouldNotDetectLocation();
 		// Expand to show the input field
 		searchView.setIconified(false);
 	}
 
 	@Override
 	public void onConnected(Bundle connectionHint) {
+		locationClientError = false;
 		getCurrentLocationFromPlayService();
 	}
 
@@ -236,9 +251,8 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 	private void getCurrentLocationFromPlayService() {
 		currentLocation = locationClient.getLastLocation();
-		String info = "CONNECTED " + currentLocation.getLatitude() + " "
-				+ currentLocation.getLongitude();
-		Toast.makeText(this, info, TOAST_DURATION).show();
+		if (currentLocation == null)
+			onLocationCouldNotBeDetected();
 
 	}
 
@@ -253,8 +267,10 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 			if (resultCode == Activity.RESULT_OK)
 				locationClient.connect();
-			else
+			else {
+				locationClientError = true;
 				onLocationCouldNotBeDetected();
+			}
 
 		}
 	}
@@ -290,4 +306,5 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		} else
 			super.onBackPressed();
 	}
+
 }

@@ -2,6 +2,7 @@ package com.hippohappa.shake.animation;
 
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.hippohappa.R;
 import com.nineoldandroids.animation.Animator;
@@ -69,29 +70,55 @@ public class HippoAnimator {
 	}
 
 	private final ImageView hippo;
+	private final TextView textView;
 	private float lastShakeAcceleration = 0;
 	private final ShakeAnimator animator;
 	private int currentDuration = 10;
 
-	public HippoAnimator(ImageView hippo) {
+	public HippoAnimator(ImageView hippo, TextView textView) {
 		this.hippo = hippo;
+		this.textView = textView;
 		animator = new ShakeAnimator();
 	}
 
-	public void showHippoSmiling() {
-		hippo.setImageResource(R.drawable.hippo_smiling_center);
+	/**
+	 * Should be called when the hippo can be shaken
+	 */
+	public void showHippoReadyForShaking() {
+		setViews(R.drawable.hippo_smiling_center, R.string.hippo_shake_phone);
 	}
 
-	public void showHippoOpenMouth() {
-		hippo.setImageResource(R.drawable.hippo_open_mouth);
+	/**
+	 * This should be called, right before the vomit animation starts
+	 */
+	public void showHippoBeforeVomit() {
+		setViews(R.drawable.hippo_open_mouth, R.string.hippo_ready_to_vomit);
 	}
 
+	/**
+	 * This should be called, after the hippo has been shaken a little bit and
+	 * before vomitting
+	 */
 	public void showHippoSick() {
-		hippo.setImageResource(R.drawable.hippo_sick);
+		setViews(R.drawable.hippo_sick, R.string.hippo_is_sick);
 	}
 
+	/**
+	 * This should be called while the users location will be retrieved
+	 */
 	public void showHippoLookingMap() {
-		hippo.setImageResource(R.drawable.hippo_looking_map);
+		setViews(R.drawable.hippo_looking_map, R.string.hippo_shake_phone);
+	}
+
+	/**
+	 * Load a string from resources
+	 * 
+	 * @param resId
+	 * @return
+	 */
+	private String getString(int resId) {
+
+		return textView.getContext().getString(resId);
 	}
 
 	public void setShakeAcceleration(float acceleration) {
@@ -115,6 +142,19 @@ public class HippoAnimator {
 		ViewHelper.setTranslationX(hippo, 0);
 		ViewHelper.setTranslationY(hippo, 0);
 
+	}
+
+	/**
+	 * Shows the hippo
+	 */
+	public void showHippoCouldNotDetectLocation() {
+		setViews(R.drawable.hippo_looking_map,
+				R.string.error_location_manager_no_location);
+	}
+
+	private void setViews(int hippoImageRes, int stringRes) {
+		hippo.setImageResource(hippoImageRes);
+		textView.setText(getString(stringRes));
 	}
 
 }

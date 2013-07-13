@@ -5,8 +5,9 @@
     <string name="action_settings">Settings</string>
     <string name="action_settings">Search</string>
     
-    <string name="shake_phone">Shake to find yum-yum</string>
-    
+    <string name="hippo_shake_phone">Shake to find yum-yum</string>
+    <string name="hippo_is_sick">I\'m so sick!</string>
+    <string name="hippo_ready_to_vomit">ooh oooohh ooh</string>
     <string name="waiting_for_location">Keep calm greenhorn! Waiting for your position or tell me your position by using the search</string>
     
     <string name="search_hint">Where are you?</string>
