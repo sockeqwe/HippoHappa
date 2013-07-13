@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import com.hannesdorfmann.httpkit.parser.condition.EqualCondition;
 import com.hannesdorfmann.httpkit.request.HttpGetRequest;
 import com.hippohappa.model.foursquare.FoursquareResponse;
 
@@ -44,6 +45,7 @@ public class RequestFactory {
 		r.setOnOfflineFromCache(true);
 
 		r.setParseInto(FoursquareResponse.class);
+		r.setParseCondition(new EqualCondition(200));
 		return r;
 	}
 
@@ -81,6 +83,24 @@ public class RequestFactory {
 		r.putUrlParam("near", cityName);
 		r.putUrlParam("section", "food");
 		r.putUrlParam("radius", 500);
+
+		return r;
+	}
+
+	/**
+	 * Get a Request to convert a address to longitude / latitude
+	 * 
+	 * @param address
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	public static HttpGetRequest getGeoCodingByAdress(String address)
+			throws UnsupportedEncodingException {
+
+		HttpGetRequest r = new HttpGetRequest(
+				"http://maps.googleapis.com/maps/api/geocode/json");
+		r.putUrlParam("address", address);
+		r.putUrlParam("sensor", false);
 
 		return r;
 	}

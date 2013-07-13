@@ -23,7 +23,9 @@
         <activity
             android:name="com.hippohappa.shake.ShakeActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:logo="@drawable/ic_head_square_actionbar"
+             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
