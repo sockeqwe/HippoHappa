@@ -12,17 +12,17 @@
     <ImageView 
         android:id="@+id/hippo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:src="@drawable/hippo_smiling_center"
+        android:src="@drawable/hippo_looking_map"
         android:layout_gravity="center"
         android:padding="50dp"/>
 
     <TextView
-        android:id="@+id/shakeHint"
+        android:id="@+id/hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/shake_phone"
+        android:text="@string/waiting_for_location"
         android:layout_gravity="center"
         android:gravity="center"
         style="@style/shake_hint" />

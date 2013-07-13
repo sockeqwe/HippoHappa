@@ -7,6 +7,8 @@
     
     <string name="shake_phone">Shake to find yum-yum</string>
     
+    <string name="waiting_for_location">Keep calm greenhorn! Waiting for your position or tell me your position by using the search</string>
+    
     <string name="search_hint">Where are you?</string>
     
     <string name="error_location_manager_no_location">Could not determine your current location. Please use the search to set you current location.s</string>

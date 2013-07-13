@@ -90,6 +90,10 @@ public class HippoAnimator {
 		hippo.setImageResource(R.drawable.hippo_sick);
 	}
 
+	public void showHippoLookingMap() {
+		hippo.setImageResource(R.drawable.hippo_looking_map);
+	}
+
 	public void setShakeAcceleration(float acceleration) {
 
 		if (acceleration > lastShakeAcceleration)

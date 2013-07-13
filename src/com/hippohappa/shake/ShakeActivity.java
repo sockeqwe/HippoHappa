@@ -46,7 +46,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 	private MenuItem searchItem;
 	private SearchView searchView;
-	private TextView shakeHint;
+	private TextView hintView;
 
 	private Item randomItem;
 	private boolean itemLoaded;
@@ -89,7 +89,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		setContentView(R.layout.activity_shake);
 
 		hippo = (ImageView) findViewById(R.id.hippo);
-		shakeHint = (TextView) findViewById(R.id.shakeHint);
+		hintView = (TextView) findViewById(R.id.hint);
 
 		hippoAnimator = new HippoAnimator(hippo);
 
