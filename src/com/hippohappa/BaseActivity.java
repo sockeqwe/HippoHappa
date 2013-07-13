@@ -11,6 +11,8 @@ import com.hannesdorfmann.httpkit.HttpKit;
  */
 public class BaseActivity extends SherlockActivity {
 
+	public static final int TOAST_DURATION = 4000;
+
 	protected HippoHappaApplication getApp() {
 		return (HippoHappaApplication) getApplication();
 	}

@@ -36,7 +36,7 @@ public class RequestFactory {
 		r.putUrlParam("v", formatter.format(new Date()));
 
 		r.getHttpHeaders().put("Accept-Language",
-				Locale.getDefault().getCountry());
+				Locale.getDefault().getCountry().toLowerCase(Locale.US));
 
 		// Settings
 		r.setCacheResponse(true);

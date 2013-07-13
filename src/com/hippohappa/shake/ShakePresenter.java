@@ -40,6 +40,7 @@ public class ShakePresenter extends HttpPresenter<ShakeView> {
 	 */
 	public void findHappa(double latitude, double longitude)
 			throws UnsupportedEncodingException {
+
 		executeRequest(RequestFactory.getHappaRequest(latitude, longitude));
 	}
 

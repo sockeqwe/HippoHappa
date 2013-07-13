@@ -2,17 +2,25 @@ package com.hippohappa.shake;
 
 import java.io.UnsupportedEncodingException;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
 import com.hippohappa.BaseActivity;
 import com.hippohappa.R;
 import com.hippohappa.exception.NoSensorException;
@@ -25,7 +33,11 @@ import com.hippohappa.shake.animation.HippoAnimator;
  * @author Hannes Dorfmann
  * 
  */
-public class ShakeActivity extends BaseActivity implements ShakeView {
+public class ShakeActivity extends BaseActivity implements ShakeView,
+		GooglePlayServicesClient.ConnectionCallbacks,
+		GooglePlayServicesClient.OnConnectionFailedListener {
+
+	private final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 23;
 
 	private ImageView hippo;
 
@@ -33,6 +45,10 @@ public class ShakeActivity extends BaseActivity implements ShakeView {
 
 	private Item randomItem;
 	private boolean itemLoaded;
+
+	private LocationClient locationClient;
+	private Location currentLocation;
+	private boolean locationClientReconnectOnDisconnect;
 
 	private ShakePresenter presenter;
 	private HippoAnimator hippoAnimator;
@@ -72,13 +88,6 @@ public class ShakeActivity extends BaseActivity implements ShakeView {
 
 		hippoAnimator = new HippoAnimator(hippo);
 
-		hippo.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-			}
-		});
-
 		// Init the sensor
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -95,7 +104,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView {
 
 		presenter = new ShakePresenter(this, getHttpKit());
 
-		findHappa(49.016674, 12.095343);
+		locationClient = new LocationClient(this, this, this);
 	}
 
 	private void findHappa(double latitude, double longitude) {
@@ -110,6 +119,24 @@ public class ShakeActivity extends BaseActivity implements ShakeView {
 	public void onDestroy() {
 		super.onDestroy();
 		presenter.onDestroy(presenter);
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		// Connect the client.
+		locationClientReconnectOnDisconnect = true;
+		locationClient.connect();
+	}
+
+	@Override
+	protected void onStop() {
+
+		// Disconnecting the client invalidates it.
+		locationClientReconnectOnDisconnect = false;
+		locationClient.disconnect();
+		super.onStop();
 	}
 
 	@Override
@@ -148,8 +175,84 @@ public class ShakeActivity extends BaseActivity implements ShakeView {
 
 	@Override
 	public void showError(Exception e) {
-		// TODO Auto-generated method stub
 
 	}
 
+	@Override
+	public void onConnectionFailed(ConnectionResult connectionResult) {
+		/*
+		 * Google Play services can resolve some errors it detects. If the error
+		 * has a resolution, try sending an Intent to start a Google Play
+		 * services activity that can resolve error.
+		 */
+		if (connectionResult.hasResolution()) {
+			try {
+				// Start an Activity that tries to resolve the error
+				connectionResult.startResolutionForResult(this,
+						CONNECTION_FAILURE_RESOLUTION_REQUEST);
+				/*
+				 * Thrown if Google Play services canceled the original
+				 * PendingIntent
+				 */
+			} catch (IntentSender.SendIntentException e) {
+				// Log the error
+				e.printStackTrace();
+			}
+		} else {
+			/*
+			 * If no resolution is available, display a dialog to the user with
+			 * the error.
+			 */
+			onLocationCouldNotBeDetected();
+		}
+
+	}
+
+	/**
+	 * Called, if the location could not be detected from the
+	 * {@link LocationManager}
+	 */
+	private void onLocationCouldNotBeDetected() {
+
+		Toast.makeText(this, R.string.error_location_manager_no_location,
+				TOAST_DURATION).show();
+	}
+
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		getCurrentLocationFromPlayService();
+	}
+
+	@Override
+	public void onDisconnected() {
+		if (locationClientReconnectOnDisconnect)
+			locationClient.connect();
+	}
+
+	private void getCurrentLocationFromPlayService() {
+		currentLocation = locationClient.getLastLocation();
+		String info = "CONNECTED " + currentLocation.getLatitude() + " "
+				+ currentLocation.getLongitude();
+		Toast.makeText(this, info, TOAST_DURATION).show();
+
+		Log.d("Test", info);
+
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// Decide what to do based on the original request code
+		switch (requestCode) {
+		case CONNECTION_FAILURE_RESOLUTION_REQUEST:
+			/*
+			 * If the result code is Activity.RESULT_OK, try to connect again
+			 */
+
+			if (resultCode == Activity.RESULT_OK)
+				locationClient.connect();
+			else
+				onLocationCouldNotBeDetected();
+
+		}
+	}
 }

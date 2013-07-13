@@ -3,6 +3,9 @@
 
     <string name="app_name">Hippo Happa</string>
     <string name="action_settings">Settings</string>
-    <string name="shake_phone">Shake your phone to find yum-yum</string>
+    <string name="shake_phone">Shake to find yum-yum</string>
+    
+    
+    <string name="error_location_manager_no_location">Could not determine your current location</string>
 
 </resources>
