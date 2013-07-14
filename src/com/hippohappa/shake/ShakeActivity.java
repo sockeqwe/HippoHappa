@@ -60,6 +60,8 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	private List<Item> items;
 	private boolean itemLoaded;
 
+	private GeocodingAdapter geoAdapter;
+
 	private LocationClient locationClient;
 	private Location currentLocation;
 	private boolean locationClientReconnectOnDisconnect;
@@ -113,6 +115,8 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 		// ListVIew
 		geocodingListView = (ListView) findViewById(R.id.geocodingList);
+		geoAdapter = new GeocodingAdapter(getApplicationContext());
+		geocodingListView.setAdapter(geoAdapter);
 
 		// Init the sensor
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -355,8 +359,9 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	}
 
 	@Override
-	public void setGeocodingResut(List<GeoResult> result) {
-		// TODO Auto-generated method stub
+	public void setGeocodingResut(List<GeoResult> results) {
+		geoAdapter.setGeoResults(results);
+		geoAdapter.notifyDataSetChanged();
 
 	}
 
