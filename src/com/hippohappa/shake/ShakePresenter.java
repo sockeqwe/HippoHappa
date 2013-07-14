@@ -2,7 +2,6 @@ package com.hippohappa.shake;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Random;
 
 import com.hannesdorfmann.httpkit.HttpKit;
 import com.hannesdorfmann.httpkit.exception.UnexpectedHttpStatusCodeException;
@@ -11,6 +10,7 @@ import com.hannesdorfmann.httpkit.request.HttpGetRequest;
 import com.hannesdorfmann.httpkit.request.HttpRequest;
 import com.hannesdorfmann.httpkit.response.HttpResponse;
 import com.hannesdorfmann.httpkit.response.HttpResponseReceiver;
+import com.hippohappa.http.ErrorState;
 import com.hippohappa.http.RequestFactory;
 import com.hippohappa.model.foursquare.FoursquareResponse;
 import com.hippohappa.model.foursquare.Item;
@@ -52,7 +52,7 @@ public class ShakePresenter extends HttpPresenter<ShakeView> {
 					@Override
 					public void onFailure(HttpRequest req, Exception arg1) {
 						if (view != null && currentRequest == req)
-							view.showHappaError(arg1);
+							view.showHappaError(ErrorState.from(arg1));
 
 					}
 
@@ -68,10 +68,6 @@ public class ShakePresenter extends HttpPresenter<ShakeView> {
 								if (items == null)
 									view.setItem(null);
 								else {
-									Random random = new Random();
-									Item item = items.get(random.nextInt(items
-											.size()));
-									view.setItem(item);
 								}
 
 							} else
@@ -95,14 +91,13 @@ public class ShakePresenter extends HttpPresenter<ShakeView> {
 		httpKit.execute(r, new HttpResponseReceiver<GeocodingResult>() {
 
 			@Override
-			public void onFailure(HttpRequest arg0, Exception arg1) {
+			public void onFailure(HttpRequest req, Exception e) {
 				// TODO Auto-generated method stub
 
 			}
 
 			@Override
-			public void onSuccess(HttpResponse<GeocodingResult> arg0) {
-				// TODO Auto-generated method stub
+			public void onSuccess(HttpResponse<GeocodingResult> res) {
 
 			}
 		});

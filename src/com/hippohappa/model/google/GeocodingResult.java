@@ -127,6 +127,9 @@ public class GeocodingResult {
 	 *         list) result
 	 */
 	public boolean isValid() {
+		if (status == null)
+			return false;
+
 		return status.equals(STATUS_OK) || status.equals(STATUS_ZERO_RESULTS);
 	}
 
@@ -145,7 +148,7 @@ public class GeocodingResult {
 	 *         are missing
 	 */
 	public boolean isNotValidCauseError() {
-		return status.equals(STATUS_REQUEST_DENIED)
+		return status == null || status.equals(STATUS_REQUEST_DENIED)
 				|| status.equals(STATUS_INVALID_REQUEST);
 	}
 

@@ -1,6 +1,7 @@
 package com.hippohappa.shake;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,19 +15,24 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
+import com.actionbarsherlock.widget.SearchView.OnQueryTextListener;
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.hippohappa.BaseActivity;
 import com.hippohappa.R;
-import com.hippohappa.exception.NoSensorException;
+import com.hippohappa.http.ErrorState;
 import com.hippohappa.model.foursquare.Item;
+import com.hippohappa.model.google.GeocodingResult.GeoResult;
 import com.hippohappa.shake.animation.HippoAnimator;
 
 /**
@@ -41,13 +47,17 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 	private final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 23;
 
+	private AdView adView;
+
 	private ImageView hippoView;
 
 	private MenuItem searchItem;
 	private SearchView searchView;
 	private TextView hintView;
+	private TextView errorView;
+	private ListView geocodingListView;
 
-	private Item randomItem;
+	private List<Item> items;
 	private boolean itemLoaded;
 
 	private LocationClient locationClient;
@@ -88,10 +98,21 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_shake);
 
+		// AdMob
+		adView = (AdView) this.findViewById(R.id.adView);
+		adView.loadAd(new AdRequest());
+
+		// Hippo
 		hippoView = (ImageView) findViewById(R.id.hippo);
 		hintView = (TextView) findViewById(R.id.hint);
 
 		hippo = new HippoAnimator(hippoView, hintView);
+
+		// Error Message
+		errorView = (TextView) findViewById(R.id.errorMessage);
+
+		// ListVIew
+		geocodingListView = (ListView) findViewById(R.id.geocodingList);
 
 		// Init the sensor
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -104,7 +125,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 			accelCurrent = SensorManager.GRAVITY_EARTH;
 			accelLast = SensorManager.GRAVITY_EARTH;
 		} else {
-			showHappaError(new NoSensorException());
+			showHappaError(ErrorState.NO_ACCELERATION_SENSOR);
 		}
 
 		presenter = new ShakePresenter(this, getHttpKit());
@@ -123,8 +144,17 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 			presenter.findHappa(currentLocation.getLatitude(),
 					currentLocation.getLongitude());
 		} catch (UnsupportedEncodingException e) {
-			showHappaError(e);
+			showHappaError(ErrorState.UNEXPECTED_STATUS_CODE);
 		}
+	}
+
+	/**
+	 * This method is called to start the geo coding request
+	 * 
+	 * @param query
+	 */
+	private void findGeoLocation(String query) {
+
 	}
 
 	@Override
@@ -183,17 +213,6 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		if (acceleration > 12) {
 			hippo.setShakeAcceleration(acceleration);
 		}
-	}
-
-	@Override
-	public void setItem(Item randomVenue) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void showHappaError(Exception e) {
-
 	}
 
 	@Override
@@ -288,6 +307,21 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 		searchView.setIconifiedByDefault(true);
 
+		searchView.setOnQueryTextListener(new OnQueryTextListener() {
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				if (query.length() > 0 || !query.equals("")) {
+					searchView.setIconified(true);
+					findGeoLocation(query);
+				}
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				return true;
+			}
+		});
 		// Connect the client.
 		locationClientReconnectOnDisconnect = true;
 		locationClient.connect();
@@ -306,6 +340,42 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 			searchView.setIconified(true);
 		} else
 			super.onBackPressed();
+	}
+
+	@Override
+	public void setItem(List<Item> randomItems) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void showHappaError(ErrorState e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setGeocodingResut(List<GeoResult> result) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setGeocodingError(ErrorState e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void showHippo() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void showGeocodingList() {
+		// TODO Auto-generated method stub
+
 	}
 
 }
