@@ -20,7 +20,7 @@
         android:id="@+id/hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/waiting_for_location"
+        android:text="@string/hippo_waiting_for_location"
         android:gravity="center"
         style="@style/shake_hint"
         android:layout_above="@+id/adView"

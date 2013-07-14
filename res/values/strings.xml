@@ -8,10 +8,14 @@
     <string name="hippo_shake_phone">Shake to find yum-yum</string>
     <string name="hippo_is_sick">I\'m so sick!</string>
     <string name="hippo_ready_to_vomit">ooh oooohh ooh</string>
-    <string name="waiting_for_location">Keep calm greenhorn! I\'m waiting for your position. Otherwise you can tell me your position by using the search.</string>
+    <string name="hippo_waiting_for_location">Keep calm greenhorn! I\'m waiting for your position. Otherwise you can tell me your position by using the search.</string>
     
     <string name="search_hint">Where are you?</string>
     
     <string name="error_location_manager_no_location">Could not determine your current location. Please use the search to set you current location.</string>
 
+    <string name="error_unsupported_encodind">Your device does not support the required encoding. Therefore this app can not be used.</string>
+    <string name="error_no_internet">Are you connected with the internet? Click herer to retry.</string>
+    <string name="error_general">Oops!\nAn error has occurred. Click here to retry.</string>
+    <string name="error_no_acceleration_sensor">Sorry this app needs a acceleration sensor, but your device has none. The app can not be used without this sensor.</string>
 </resources>

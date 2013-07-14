@@ -14,6 +14,8 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,6 +36,7 @@ import com.hippohappa.http.ErrorState;
 import com.hippohappa.model.foursquare.Item;
 import com.hippohappa.model.google.GeocodingResult.GeoResult;
 import com.hippohappa.shake.animation.HippoAnimator;
+import com.hippohappa.util.ErrorMessage;
 
 /**
  * This is the activiy where the user has to shake to get a list of restaurants
@@ -112,6 +115,13 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 		// Error Message
 		errorView = (TextView) findViewById(R.id.errorMessage);
+		errorView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				restoreViewAfterError();
+			}
+		});
 
 		// ListVIew
 		geocodingListView = (ListView) findViewById(R.id.geocodingList);
@@ -135,6 +145,22 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		presenter = new ShakePresenter(this, getHttpKit());
 
 		locationClient = new LocationClient(this, this, this);
+	}
+
+	/**
+	 * Restores the view after an error has occurred and the user has clicked on
+	 * the retry button
+	 */
+	private void restoreViewAfterError() {
+		errorView.setVisibility(View.GONE);
+
+		if (currentLocation != null) {
+			hippo.showHippoReadyForShaking();
+		} else
+			onLocationCouldNotBeDetected();
+
+		hippo.setVisible();
+
 	}
 
 	/**
@@ -214,7 +240,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	 */
 	private void checkAccelaration(float acceleration) {
 
-		if (acceleration > 12) {
+		if (hippo.isVisible() && acceleration > 12) {
 			hippo.setShakeAcceleration(acceleration);
 		}
 	}
@@ -367,19 +393,34 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 	@Override
 	public void setGeocodingError(ErrorState e) {
-		// TODO Auto-generated method stub
+		showError(e);
+	}
 
+	private void showError(ErrorState e) {
+		boolean retry = true;
+		if (e == ErrorState.NO_ACCELERATION_SENSOR
+				|| e == ErrorState.NO_ACCELERATION_SENSOR)
+
+			retry = false;
+
+		String msg = getString(ErrorMessage.from(e));
+		errorView.setText(msg);
+		errorView.setClickable(retry);
 	}
 
 	@Override
 	public void showHippo() {
-		// TODO Auto-generated method stub
+		errorView.setVisibility(View.GONE);
+		geocodingListView.setVisibility(View.GONE);
+		hippo.setVisible();
 
 	}
 
 	@Override
 	public void showGeocodingList() {
-		// TODO Auto-generated method stub
+		hippo.setVisibilityGone();
+		errorView.setVisibility(View.GONE);
+		geocodingListView.setVisibility(View.VISIBLE);
 
 	}
 

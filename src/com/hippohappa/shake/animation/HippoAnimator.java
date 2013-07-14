@@ -1,6 +1,7 @@
 package com.hippohappa.shake.animation;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -161,4 +162,18 @@ public class HippoAnimator {
 		textView.setText(getString(stringRes));
 	}
 
+	public void setVisible() {
+		hippo.setVisibility(View.VISIBLE);
+		textView.setVisibility(View.VISIBLE);
+	}
+
+	public void setVisibilityGone() {
+		hippo.setVisibility(View.GONE);
+		textView.setVisibility(View.GONE);
+		stop();
+	}
+
+	public boolean isVisible() {
+		return hippo.isShown();
+	}
 }
