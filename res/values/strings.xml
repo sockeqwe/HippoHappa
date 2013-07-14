@@ -18,4 +18,7 @@
     <string name="error_no_internet">Are you connected with the internet? Click herer to retry.</string>
     <string name="error_general">Oops!\nAn error has occurred. Click here to retry.</string>
     <string name="error_no_acceleration_sensor">Sorry this app needs a acceleration sensor, but your device has none. The app can not be used without this sensor.</string>
+
+	<string name="loading_view_text">loading</string>
+
 </resources>

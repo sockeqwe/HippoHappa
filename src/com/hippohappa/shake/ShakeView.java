@@ -37,7 +37,7 @@ public interface ShakeView {
 	 * 
 	 * @param e
 	 */
-	public void setGeocodingError(ErrorState e);
+	public void showGeocodingError(ErrorState e);
 
 	/**
 	 * Shows the hippo components

@@ -184,6 +184,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	 * @param query
 	 */
 	private void findGeoLocation(String query) {
+		getSupportActionBar().setTitle(query);
 
 	}
 
@@ -201,7 +202,6 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 	@Override
 	protected void onStop() {
-
 		// Disconnecting the client invalidates it.
 		locationClientReconnectOnDisconnect = false;
 		locationClient.disconnect();
@@ -374,14 +374,12 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 	@Override
 	public void setItem(List<Item> randomItems) {
-		// TODO Auto-generated method stub
-
+		this.items = randomItems;
 	}
 
 	@Override
 	public void showHappaError(ErrorState e) {
-		// TODO Auto-generated method stub
-
+		showError(e);
 	}
 
 	@Override
@@ -392,7 +390,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	}
 
 	@Override
-	public void setGeocodingError(ErrorState e) {
+	public void showGeocodingError(ErrorState e) {
 		showError(e);
 	}
 
@@ -406,6 +404,10 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		String msg = getString(ErrorMessage.from(e));
 		errorView.setText(msg);
 		errorView.setClickable(retry);
+
+		hippo.setVisibilityGone();
+		geocodingListView.setVisibility(View.GONE);
+		errorView.setVisibility(View.VISIBLE);
 	}
 
 	@Override
