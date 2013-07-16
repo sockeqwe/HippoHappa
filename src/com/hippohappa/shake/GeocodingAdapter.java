@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.hippohappa.HippoBaseAdapter;
 import com.hippohappa.R;
+import com.hippohappa.model.google.GeoResult;
 import com.hippohappa.model.google.GeocodingResult;
-import com.hippohappa.model.google.GeocodingResult.GeoResult;
 
 /**
  * An adapter to present the {@link GeocodingResult}

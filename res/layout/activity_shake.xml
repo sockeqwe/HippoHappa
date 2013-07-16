@@ -56,6 +56,14 @@
          ads:loadAdOnCreate="true"
          android:layout_centerHorizontal="true"
         />
-    
+
+     <ProgressBar
+         android:id="@+id/loadingView"
+         style="?android:attr/progressBarStyleLarge"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerHorizontal="true"
+         android:layout_centerVertical="true" 
+         android:visibility="gone"/>
 
 </RelativeLayout>

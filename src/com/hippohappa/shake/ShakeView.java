@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.hippohappa.http.ErrorState;
 import com.hippohappa.model.foursquare.Item;
-import com.hippohappa.model.google.GeocodingResult.GeoResult;
+import com.hippohappa.model.google.GeoResult;
 
 /**
  * 
@@ -30,7 +30,7 @@ public interface ShakeView {
 	 * 
 	 * @param result
 	 */
-	public void setGeocodingResut(List<GeoResult> result);
+	public void setGeocodingResult(List<GeoResult> result);
 
 	/**
 	 * Set the error that has been occurred while retrieving geo coding results

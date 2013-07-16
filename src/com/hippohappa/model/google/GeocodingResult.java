@@ -3,7 +3,6 @@ package com.hippohappa.model.google;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This the result, retrieved from google geocoding webservice
@@ -13,77 +12,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GeocodingResult {
-
-	/**
-	 * Represents a place result. Contains the title {@link #getTitle()} and the
-	 * longitude and latitue
-	 * 
-	 * @author Hannes Dorfmann
-	 * 
-	 */
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	public class GeoResult {
-
-		/**
-		 * A little wrapper class that wraps the gemoentry data, retrieved from
-		 * google geocoding (contains the longitude and latitude)
-		 * 
-		 * @author Hannes Dorfmann
-		 * 
-		 */
-		@JsonIgnoreProperties(ignoreUnknown = true)
-		public class GeoGeometry {
-
-			/**
-			 * Contains the longitude and latitude
-			 * 
-			 * @author Hannes Dorfmann
-			 * 
-			 */
-			@JsonIgnoreProperties(ignoreUnknown = true)
-			public class GeoLocation {
-
-				private double lat;
-				private double lng;
-			}
-
-			private GeoLocation location;
-
-		}
-
-		@JsonProperty(value = "formatted_address")
-		private String title;
-
-		private GeoGeometry geometry;
-
-		/**
-		 * Get the title, or better, the name of the Result
-		 * 
-		 * @return
-		 */
-		public String getTitle() {
-			return title;
-		}
-
-		/**
-		 * Get the longitude
-		 * 
-		 * @return
-		 */
-		public double getLongitude() {
-			return geometry.location.lng;
-		}
-
-		/**
-		 * Get the latitude
-		 * 
-		 * @return
-		 */
-		public double getLatitude() {
-			return geometry.location.lat;
-		}
-
-	}
 
 	/**
 	 * Google indicates that the result is ok and can be used
@@ -119,6 +47,10 @@ public class GeocodingResult {
 
 	public List<GeoResult> getGeoResults() {
 		return results;
+	}
+
+	public GeocodingResult() {
+
 	}
 
 	/**

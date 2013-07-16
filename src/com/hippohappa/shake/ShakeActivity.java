@@ -34,7 +34,7 @@ import com.hippohappa.BaseActivity;
 import com.hippohappa.R;
 import com.hippohappa.http.ErrorState;
 import com.hippohappa.model.foursquare.Item;
-import com.hippohappa.model.google.GeocodingResult.GeoResult;
+import com.hippohappa.model.google.GeoResult;
 import com.hippohappa.shake.animation.HippoAnimator;
 import com.hippohappa.util.ErrorMessage;
 
@@ -59,6 +59,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	private TextView hintView;
 	private TextView errorView;
 	private ListView geocodingListView;
+	private View loadingView;
 
 	private List<Item> items;
 	private boolean itemLoaded;
@@ -106,6 +107,9 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		// AdMob
 		adView = (AdView) this.findViewById(R.id.adView);
 		adView.loadAd(new AdRequest());
+
+		// LoadingView
+		loadingView = findViewById(R.id.loadingView);
 
 		// Hippo
 		hippoView = (ImageView) findViewById(R.id.hippo);
@@ -185,6 +189,13 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	 */
 	private void findGeoLocation(String query) {
 		getSupportActionBar().setTitle(query);
+
+		showLoading();
+		try {
+			presenter.loadPlaces(query);
+		} catch (UnsupportedEncodingException e) {
+			showError(ErrorState.UNSUPPORTED_ENCODING);
+		}
 
 	}
 
@@ -383,7 +394,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	}
 
 	@Override
-	public void setGeocodingResut(List<GeoResult> results) {
+	public void setGeocodingResult(List<GeoResult> results) {
 		geoAdapter.setGeoResults(results);
 		geoAdapter.notifyDataSetChanged();
 
@@ -407,6 +418,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 
 		hippo.setVisibilityGone();
 		geocodingListView.setVisibility(View.GONE);
+		loadingView.setVisibility(View.GONE);
 		errorView.setVisibility(View.VISIBLE);
 	}
 
@@ -414,6 +426,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	public void showHippo() {
 		errorView.setVisibility(View.GONE);
 		geocodingListView.setVisibility(View.GONE);
+		loadingView.setVisibility(View.GONE);
 		hippo.setVisible();
 
 	}
@@ -422,8 +435,15 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	public void showGeocodingList() {
 		hippo.setVisibilityGone();
 		errorView.setVisibility(View.GONE);
+		loadingView.setVisibility(View.GONE);
 		geocodingListView.setVisibility(View.VISIBLE);
 
+	}
+
+	public void showLoading() {
+		geocodingListView.setVisibility(View.GONE);
+		hippo.setVisibilityGone();
+		loadingView.setVisibility(View.VISIBLE);
 	}
 
 }

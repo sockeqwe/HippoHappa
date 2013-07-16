@@ -92,13 +92,20 @@ public class ShakePresenter extends HttpPresenter<ShakeView> {
 
 			@Override
 			public void onFailure(HttpRequest req, Exception e) {
-				// TODO Auto-generated method stub
-
+				if (view != null)
+					view.showGeocodingError(ErrorState.from(e));
 			}
 
 			@Override
 			public void onSuccess(HttpResponse<GeocodingResult> res) {
-
+				if (view != null) {
+					if (res.isResponseOkOrNotModified()) {
+						view.setGeocodingResult(res.getValue().getGeoResults());
+						view.showGeocodingList();
+					} else
+						onFailure(res.getHttpRequest(),
+								new UnexpectedHttpStatusCodeException(res));
+				}
 			}
 		});
 
