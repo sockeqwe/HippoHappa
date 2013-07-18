@@ -14,8 +14,10 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 import com.actionbarsherlock.widget.SearchView;
 import com.actionbarsherlock.widget.SearchView.OnQueryTextListener;
 import com.google.ads.AdRequest;
@@ -78,6 +81,8 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	private float mAccel; // acceleration apart from gravity
 	private float accelCurrent; // current acceleration including gravity
 	private float accelLast; // last acceleration including gravity
+
+	private boolean inSearchingMode = false;
 
 	private final SensorEventListener sensorListener = new SensorEventListener() {
 
@@ -189,6 +194,7 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	 */
 	private void findGeoLocation(String query) {
 		getSupportActionBar().setTitle(query);
+		searchView.setQuery(query, false);
 
 		showLoading();
 		try {
@@ -347,12 +353,21 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 		searchItem.setIcon(R.drawable.ic_action_search);
 
 		searchView.setIconifiedByDefault(true);
+		searchItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Log.d("Test", "clicked");
+				return false;
+			}
+		});
 
 		searchView.setOnQueryTextListener(new OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
 				if (query.length() > 0 || !query.equals("")) {
 					searchView.setIconified(true);
+					inSearchingMode = true;
 					findGeoLocation(query);
 				}
 				return false;
@@ -363,6 +378,20 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 				return true;
 			}
 		});
+
+		searchView
+				.setOnQueryTextFocusChangeListener(new OnFocusChangeListener() {
+
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						if (hasFocus) {
+							hippo.setVisibilityGone();
+							inSearchingMode = true;
+						}
+
+					}
+				});
+
 		// Connect the client.
 		locationClientReconnectOnDisconnect = true;
 		locationClient.connect();
@@ -379,6 +408,15 @@ public class ShakeActivity extends BaseActivity implements ShakeView,
 	public void onBackPressed() {
 		if (!searchView.isIconified()) {
 			searchView.setIconified(true);
+
+			if (inSearchingMode && searchView.getQuery().equals("")) {
+				showHippo();
+				inSearchingMode = false;
+			}
+
+		} else if (inSearchingMode && searchView.getQuery().equals("")) {
+			showHippo();
+			inSearchingMode = false;
 		} else
 			super.onBackPressed();
 	}
